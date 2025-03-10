@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // Autorise les requêtes vers /api
-                        .allowedOrigins("http://localhost:63342") // Autorise le front-end
+                        .allowedOrigins("https://dashboard-javainhire.netlify.app") // Autorise le front-end
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Méthodes autorisées
                         .allowedHeaders("*") // En-têtes autorisés
                         .allowCredentials(true); // Autorise les cookies
