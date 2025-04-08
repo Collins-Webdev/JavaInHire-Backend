@@ -268,4 +268,8 @@ class OfferControllerTest {
 ---
 
 ## **📝 Licence**
-MIT License - Libre d'utilisation et modification.
+**License**: MIT  
+**Version**: 1.0.0  
+**Dernière Mise à Jour**: Avril 2025
+
+Ce document reste vivant et sera mis à jour en fonction de l'évolution du projet. Pour toute contribution, merci d'ouvrir une issue sur le dépôt GitHub.
