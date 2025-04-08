@@ -1,100 +1,73 @@
-Voici un **README.md** technique et complet en français pour ton projet **JavaInHire**, couvrant tous les aspects avec une profondeur professionnelle :
+# **JavaInHire - Plateforme d'Offres d'Emploi pour Développeurs Java**
+
+## **📌 Table des Matières**
+1. [**Description du Projet**](#-description-du-projet)
+2. [**Technologies Utilisées**](#-technologies-utilisées)
+3. [**Architecture du Projet**](#-architecture-du-projet)
+4. [**Configuration Backend (Spring Boot)**](#-configuration-backend-spring-boot)
+5. [**Base de Données (PostgreSQL)**](#-base-de-données-postgresql)
+6. [**Authentification (AWS Cognito)**](#-authentification-aws-cognito)
+7. [**Déploiement (Render & Netlify)**](#-déploiement-render--netlify)
+8. [**API Endpoints**](#-api-endpoints)
+9. [**Frontend (HTML/CSS/JS)**](#-frontend-htmlcssjs)
+10. [**Tests et Bonnes Pratiques**](#-tests-et-bonnes-pratiques)
+11. [**Améliorations Futures**](#-améliorations-futures)
 
 ---
 
-```markdown
-# JavaInHire - Plateforme d'Offres d'Emploi pour Développeurs Java
-
-![Architecture Globale](docs/architecture.png)  
-*Diagramme d'architecture technique*
-
-## 📌 Table des Matières
-- [Objectif](#-objectif)
-- [Technologies](#-technologies)
-- [Architecture](#-architecture)
-- [Configuration Backend](#-configuration-backend)
-- [Base de Données](#-base-de-données)
-- [Authentification](#-authentification)
-- [API Endpoints](#-api-endpoints)
-- [Déploiement](#-déploiement)
-- [Contribuer](#-contribuer)
-- [Licence](#-licence)
+## **🚀 Description du Projet**
+**JavaInHire** est une plateforme spécialisée dans l'agrégation d'offres d'emploi pour développeurs Java (stagiaires, juniors et intermédiaires).  
+**Fonctionnalités clés** :
+- Récupération automatique d'offres depuis des flux RSS (RemoteOK, WeWorkRemotely, Empllo).
+- Filtrage des offres par niveau d'expérience (Junior, Intermédiaire).
+- Authentification sécurisée via AWS Cognito.
+- Tableau de bord de suivi des candidatures.
+- Hébergement 100% gratuit (Render + Netlify).
 
 ---
 
-## 🎯 Objectif
-Plateforme spécialisée pour les développeurs Java juniors/intermédiaires, offrant :
-- Agrégation d'offres depuis des flux RSS (RemoteOK, WeWorkRemotely, Empllo)
-- Filtrage par niveau d'expérience (<4 ans)
-- Gestion des candidatures avec suivi statistique
-- Stack 100% gratuite (Render, Netlify, AWS Free Tier)
+## **🛠 Technologies Utilisées**
+| **Catégorie**       | **Technologies**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Backend**         | Java 21, Spring Boot 3.4, Spring Data JPA, Spring Security, AWS SDK for Java    |
+| **Base de Données** | PostgreSQL (AWS RDS → Migration vers Render PostgreSQL)                         |
+| **Authentification**| AWS Cognito (Gestion des utilisateurs, JWT)                                     |
+| **Frontend**        | HTML5, CSS3, JavaScript (Vanilla), Font Awesome                                 |
+| **Déploiement**     | Render (Backend + DB), Netlify (Frontend)                                       |
+| **Outils**          | Gradle, Docker, Git, Postman, pgAdmin                                           |
 
 ---
 
-## 🛠 Technologies
-
-### Backend
-| Technologie | Version | Usage |
-|-------------|---------|-------|
-| Java | 21 | Langage principal |
-| Spring Boot | 3.4.2 | Framework backend |
-| Spring Data JPA | 3.4.2 | Persistance PostgreSQL |
-| AWS SDK for Java | 2.20.0 | Intégration Cognito |
-| ROME Tools | 2.1.0 | Parsing RSS |
-| Hibernate | 6.6.5 | ORM |
-| Gradle | 8.5 | Build system |
-
-### Frontend
-| Technologie | Usage |
-|-------------|-------|
-| HTML5 | Structure |
-| CSS3 | Styles (Flexbox/Grid) |
-| JavaScript | Interactivité |
-| Font Awesome | Icônes |
-
-### Infrastructure
-| Service | Usage |
-|---------|-------|
-| AWS RDS (PostgreSQL) | Base de données |
-| AWS Cognito | Authentification |
-| Render | Hébergement backend |
-| Netlify | Hébergement frontend |
-
----
-
-## 🏗 Architecture
-
-### Schéma Modulaire
+## **🏗 Architecture du Projet**
 ```
-src/
-├── main/
-│   ├── java/
-│   │   └── com/javainhire/
-│   │       ├── config/       # Configurations Spring
-│   │       ├── controller/   # Contrôleurs REST
-│   │       ├── model/        # Entités JPA
-│   │       ├── repositories/ # Interfaces Spring Data
-│   │       ├── service/      # Logique métier
-│   │       └── BackendApplication.java
-│   └── resources/
-│       └── application.properties
+java-inhire/
+├── backend/                  # Code Spring Boot
+│   ├── src/main/java/
+│   │   ├── config/           # Config CORS, Security
+│   │   ├── controller/       # Contrôleurs REST
+│   │   ├── model/            # Entités JPA
+│   │   ├── repository/       # Repositories Spring Data
+│   │   ├── service/          # Logique métier
+│   │   └── BackendApplication.java
+│   ├── src/main/resources/
+│   │   ├── application.properties # Config DB, JPA, Cognito
+│   │   └── data.sql          # Données initiales (optionnel)
+│   └── Dockerfile            # Configuration pour Render
+├── frontend/                 # Code Frontend
+│   ├── index.html            # Page vitrine
+│   ├── dashboard.html        # Tableau de bord
+│   ├── styles.css            # Styles globaux
+│   └── script.js             # Logique JS (fetch API, etc.)
+└── README.md                 # Documentation
 ```
 
-### Flow Data
-1. **RSS Fetching**  
-   `RssFeedService` → Flux RSS → Parsing → Enregistrement en BDD
-2. **Authentification**  
-   Frontend → Cognito → JWT → Spring Security
-3. **API Flow**  
-   Client → API Gateway → Contrôleurs Spring → Hibernate → PostgreSQL
-
 ---
 
-## ⚙ Configuration Backend
+## **⚙ Configuration Backend (Spring Boot)**
 
-### Fichier `application.properties`
+### **Fichier `application.properties`**
 ```properties
-# PostgreSQL Config
+# PostgreSQL Config (Render)
 spring.datasource.url=jdbc:postgresql://dpg-cn12345acn0c738f9vqg-a:5432/javainhire
 spring.datasource.username=javainhire_user
 spring.datasource.password=abc123def456
@@ -104,134 +77,195 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
-# Pool de Connexions
+# Pool de connexions
+spring.datasource.driver-class-name=org.postgresql.Driver
 spring.datasource.hikari.maximum-pool-size=10
-spring.datasource.hikari.connection-timeout=30000
 
-# CORS
+# AWS Cognito
+aws.cognito.userPoolId=us-east-1_XXXXXXXXX
+aws.cognito.clientId=XXXXXXXXXXXXXXXX
+aws.cognito.region=us-east-1
+
+# CORS (Autoriser Netlify)
 spring.webflux.cors.allowed-origins=https://dashboard-javainhire.netlify.app
 ```
 
-### Classes Clés
-
-#### `RssFeedService.java`
+### **Classe Principale (`BackendApplication.java`)**
 ```java
-@Service
-public class RssFeedService {
-    private static final String[] RSS_FEEDS = {
-        "https://weworkremotely.com/categories/remote-programming-jobs.rss",
-        "https://remoteok.com/remote-java-jobs.rss"
-    };
-
-    @Scheduled(fixedRate = 3600000)
-    public void fetchAndSaveOffers() {
-        // Implémentation complète du parsing RSS
+@SpringBootApplication
+@EnableJpaRepositories
+@EnableScheduling // Pour le fetch périodique des offres
+public class BackendApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BackendApplication.class, args);
     }
 }
 ```
 
 ---
 
-## 🗃 Base de Données
-
-### Schéma PostgreSQL
+## **🗃 Base de Données (PostgreSQL)**
+### **Schéma des Tables**
 ```sql
-CREATE TABLE offer (
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE offers (
     offer_id SERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     description TEXT,
-    experience_level VARCHAR(50),
-    source VARCHAR(100),
-    link VARCHAR(200) UNIQUE,
-    is_favorite BOOLEAN DEFAULT false,
-    is_viewed BOOLEAN DEFAULT false
+    experience_level VARCHAR(50) NOT NULL,
+    source VARCHAR(100) NOT NULL,
+    link VARCHAR(200) NOT NULL,
+    is_favorite BOOLEAN DEFAULT FALSE,
+    is_viewed BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE applications (
+    application_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),
+    offer_id INT REFERENCES offers(offer_id),
+    status VARCHAR(50) NOT NULL,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-### Optimisations
-- Index sur `experience_level` pour les requêtes de filtrage
-- Contraintes UNIQUE sur `link` pour éviter les doublons
-- Pool de connexions HikariCP configuré
-
 ---
 
-## 🔐 Authentification
-
-### Configuration Cognito
+## **🔐 Authentification (AWS Cognito)
+### **Configuration AWS SDK**
 ```java
 @Configuration
 public class CognitoConfig {
+    @Value("${aws.cognito.region}")
+    private String region;
+
     @Bean
     public CognitoIdentityProviderClient cognitoClient() {
         return CognitoIdentityProviderClient.builder()
-            .region(Region.US_EAST_1)
-            .build();
+                .region(Region.of(region))
+                .build();
     }
 }
 ```
 
-### Flow JWT
-1. Frontend redirige vers Cognito Hosted UI
-2. Cognito retourne un JWT
-3. JWT validé par Spring Security:
+### **Exemple d'Inscription**
 ```java
-@EnableWebSecurity
-public class SecurityConfig {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/api/auth/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .oauth2ResourceServer()
-            .jwt();
-    }
+public void registerUser(String email, String password, String firstName, String lastName) {
+    SignUpRequest request = SignUpRequest.builder()
+            .clientId(clientId)
+            .username(email)
+            .password(password)
+            .userAttributes(
+                    AttributeType.builder().name("email").value(email).build(),
+                    AttributeType.builder().name("given_name").value(firstName).build(),
+                    AttributeType.builder().name("family_name").value(lastName).build()
+            )
+            .build();
+    cognitoClient.signUp(request);
 }
 ```
 
 ---
 
-## 🚀 Déploiement
+## **☁ Déploiement (Render & Netlify)**
+### **Backend sur Render**
+1. **Configuration Dockerfile** :
+   ```dockerfile
+   FROM openjdk:21-jdk-slim
+   WORKDIR /app
+   COPY build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
+   EXPOSE 8080
+   ENTRYPOINT ["java", "-jar", "app.jar"]
+   ```
 
-### Backend sur Render
-1. Dockerfile:
-```dockerfile
-FROM openjdk:21-jdk-slim
-COPY build/libs/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
-```
+2. **Variables d'environnement Render** :
+   ```
+   SPRING_DATASOURCE_URL=jdbc:postgresql://your-render-db-url
+   SPRING_DATASOURCE_USERNAME=your-db-user
+   SPRING_DATASOURCE_PASSWORD=your-db-password
+   ```
 
-2. Variables d'environnement Render:
-```
-DATABASE_URL=postgresql://user:pass@host:5432/db
-JAVA_OPTS=-Xmx512m -Xms256m
-```
+### **Frontend sur Netlify**
+- Déploiement continu depuis GitHub.
+- URL publique : `https://dashboard-javainhire.netlify.app`
 
-### Frontend sur Netlify
-- Build command: `npm run build` (si utilisation de tools)
-- Publier le dossier `frontend/` directement
+---
+
+## **🔌 API Endpoints**
+| **Endpoint**                | **Méthode** | **Description**                          |
+|-----------------------------|------------|------------------------------------------|
+| `/api/offers`               | GET        | Liste paginée des offres                 |
+| `/api/offers/{id}/favorite` | POST       | Marquer une offre comme favorite         |
+| `/api/auth/register`        | POST       | Inscription utilisateur                  |
+| `/api/auth/login`           | POST       | Connexion utilisateur                    |
 
 ---
 
-## 📜 Licence
-MIT License - Voir [LICENSE.md](LICENSE.md)
-
----
+## **🎨 Frontend (HTML/CSS/JS)**
+### **Structure Principale**
+```html
+<!-- dashboard.html -->
+<div id="offers-list">
+    <!-- Dynamiquement rempli par JS -->
+</div>
+<div class="pagination">
+    <button id="prevPage">Précédent</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="nextPage">Suivant</button>
+</div>
 ```
 
-### Points Clés Professionnels :
-1. **Précision Technique** : Détails exacts des versions et configurations
-2. **Schémas Architecturaux** : Diagrams implicites via ASCII/description
-3. **Bonnes Pratiques** : Mentions des optimisations (pool de connexions, index)
-4. **Sécurité** : Explication détaillée du flow JWT
-5. **Déploiement** : Instructions précises pour chaque service
+### **Exemple de Fetch API**
+```javascript
+fetch("https://javainhire-backend.onrender.com/api/offers")
+    .then(response => response.json())
+    .then(data => {
+        data.content.forEach(offer => {
+            // Afficher chaque offre dans le DOM
+        });
+    });
+```
 
-Ce README montre une maîtrise approfondie de :
-- Spring Boot (config avancée, scheduling, sécurité)
-- AWS (Cognito, RDS)
-- PostgreSQL (optimisations, schéma)
-- CI/CD (Render, Netlify)
+---
 
-Adapte les URLs et credentials selon ton implémentation réelle.
+## **🧪 Tests et Bonnes Pratiques**
+### **Tests Spring Boot**
+```java
+@SpringBootTest
+class OfferControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void testGetOffers() throws Exception {
+        mockMvc.perform(get("/api/offers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(10)));
+    }
+}
+```
+
+### **Bonnes Pratiques**
+- Validation des entrées (`@Valid` dans les contrôleurs).
+- Gestion des erreurs globales (`@ControllerAdvice`).
+- Logging avec SLF4J.
+- Sécurité : HTTPS, CORS restrictifs.
+
+---
+
+## **🚀 Améliorations Futures**
+- **Notifications** : Alertes pour nouvelles offres.
+- **Recherche avancée** : Filtres par compétences/salaire.
+- **Intégration LinkedIn** : Postuler directement via l'API LinkedIn.
+- **Monitoring** : Prometheus + Grafana pour les métriques.
+
+---
+
+## **📝 Licence**
+MIT License - Libre d'utilisation et modification.
