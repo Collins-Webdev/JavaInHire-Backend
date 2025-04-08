@@ -39,6 +39,7 @@
 ---
 
 ## **🏗 Architecture du Projet**
+### **Structure des Fichiers**
 ```
 java-inhire/
 ├── backend/                  # Code Spring Boot
@@ -59,6 +60,41 @@ java-inhire/
 │   ├── styles.css            # Styles globaux
 │   └── script.js             # Logique JS (fetch API, etc.)
 └── README.md                 # Documentation
+```
+
+### **Flux de Données**
+```mermaid
+sequenceDiagram
+    participant Utilisateur
+    participant Frontend
+    participant Backend
+    participant PostgreSQL
+    participant AWS Cognito
+
+    Utilisateur->>Frontend: Accès à dashboard.html (Netlify)
+    Frontend->>AWS Cognito: Redirection pour authentification
+    AWS Cognito-->>Frontend: JWT après login réussi
+    Frontend->>Backend: GET /api/offers?page=0 (avec JWT)
+    Backend->>PostgreSQL: SELECT * FROM offers LIMIT 10
+    PostgreSQL-->>Backend: Résultats (10 offres)
+    Backend-->>Frontend: JSON paginé (content, pageable)
+    Frontend->>DOM: Rendu dynamique avec createElement()
+    
+    loop Interactions utilisateur
+        Utilisateur->>Frontend: Clic sur "Favori" (offerID=5)
+        Frontend->>Backend: POST /api/offers/5/favorite
+        Backend->>PostgreSQL: UPDATE offers SET is_favorite=true
+        PostgreSQL-->>Backend: Confirmation
+        Backend-->>Frontend: 200 OK
+        
+        Utilisateur->>Frontend: Clic sur "Page suivante"
+        Frontend->>Backend: GET /api/offers?page=1
+        Backend-->>Frontend: Nouveau lot d'offres
+    end
+
+    Note over Backend,PostgreSQL: Spring Data JPA gère<br>le mapping objet-relationnel
+    Note over Frontend: Pas de framework JS<br>(Vanilla JavaScript)
+
 ```
 
 ---
